@@ -4,6 +4,6 @@ export const Route = createFileRoute('/')({
   component: IndexPage,
 });
 
-function IndexPage(): JSX.Element {
+function IndexPage() {
   return <h1>Service Desk</h1>;
 }
