@@ -1,0 +1,61 @@
+{
+  "name": "api",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/api",
+  "tags": ["type:app", "platform:dotnet", "scope:backend"],
+  "targets": {
+    "build": {
+      "command": "dotnet build",
+      "options": {
+        "cwd": "{projectRoot}",
+        "args": ["--configuration", "Release", "--no-restore", "--no-dependencies"]
+      },
+      "dependsOn": ["^build"],
+      "cache": true,
+      "inputs": ["default", "^production"],
+      "outputs": ["{projectRoot}/bin", "{projectRoot}/obj"]
+    },
+    "serve": {
+      "command": "dotnet run",
+      "options": {
+        "cwd": "{projectRoot}",
+        "args": ["--launch-profile", "http"]
+      },
+      "dependsOn": ["build"]
+    },
+    "test": {
+      "command": "dotnet test",
+      "options": {
+        "cwd": "{projectRoot}",
+        "args": ["--no-build", "--no-restore"]
+      },
+      "dependsOn": ["build"],
+      "cache": true,
+      "inputs": ["default", "^production"],
+      "outputs": ["{projectRoot}/TestResults"]
+    },
+    "restore": {
+      "command": "dotnet restore",
+      "options": {
+        "cwd": "{projectRoot}"
+      },
+      "cache": true
+    },
+    "clean": {
+      "command": "dotnet clean",
+      "options": {
+        "cwd": "{projectRoot}"
+      }
+    },
+    "publish": {
+      "command": "dotnet publish",
+      "options": {
+        "cwd": "{projectRoot}",
+        "args": ["--configuration", "Release"]
+      },
+      "dependsOn": ["build"],
+      "outputs": ["{projectRoot}/bin/Release/net8.0/publish"]
+    }
+  }
+}
