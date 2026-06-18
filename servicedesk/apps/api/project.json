@@ -9,6 +9,17 @@
       "command": "dotnet build",
       "options": {
         "cwd": "{projectRoot}",
+        "args": ["--configuration", "Debug", "--no-restore", "--no-dependencies"]
+      },
+      "dependsOn": ["^build"],
+      "cache": true,
+      "inputs": ["default", "^production"],
+      "outputs": ["{projectRoot}/bin", "{projectRoot}/obj"]
+    },
+    "build:release": {
+      "command": "dotnet build",
+      "options": {
+        "cwd": "{projectRoot}",
         "args": ["--configuration", "Release", "--no-restore", "--no-dependencies"]
       },
       "dependsOn": ["^build"],
@@ -20,7 +31,15 @@
       "command": "dotnet run",
       "options": {
         "cwd": "{projectRoot}",
-        "args": ["--launch-profile", "http"]
+        "args": ["--launch-profile", "http", "--no-build"]
+      },
+      "dependsOn": ["build"]
+    },
+    "run": {
+      "command": "dotnet run",
+      "options": {
+        "cwd": "{projectRoot}",
+        "args": ["--launch-profile", "http", "--no-build"]
       },
       "dependsOn": ["build"]
     },
@@ -54,7 +73,7 @@
         "cwd": "{projectRoot}",
         "args": ["--configuration", "Release"]
       },
-      "dependsOn": ["build"],
+      "dependsOn": ["build:release"],
       "outputs": ["{projectRoot}/bin/Release/net8.0/publish"]
     }
   }
