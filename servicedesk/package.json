@@ -9,8 +9,7 @@
     "@tanstack/react-router": "1.170.16",
     "antd": "6.4.4",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "react-router-dom": "6.30.3"
+    "react-dom": "^19.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.8.0",
