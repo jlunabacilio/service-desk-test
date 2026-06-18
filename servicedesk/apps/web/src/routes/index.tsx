@@ -1,8 +1,10 @@
+import { useState } from 'react';
 import { createFileRoute, Link } from '@tanstack/react-router';
-import { Table, Tag } from 'antd';
+import { Button, Table, Tag } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import type { Ticket, TicketPriority, TicketStatus } from '@servicedesk/shared-types';
 import { MOCK_TICKETS } from '../mocks/tickets';
+import { NewTicketModal } from '../components/NewTicketModal';
 
 export const Route = createFileRoute('/')({
   loader: (): Ticket[] => MOCK_TICKETS,
@@ -27,10 +29,10 @@ const COLUMNS: ColumnsType<Ticket> = [
   {
     title: 'ID',
     dataIndex: 'id',
-    width: 60,
+    width: 80,
     render: (id: string) => (
       <Link to="/tickets/$ticketId" params={{ ticketId: id }}>
-        #{id}
+        #{id.slice(0, 8)}
       </Link>
     ),
   },
@@ -68,14 +70,36 @@ const COLUMNS: ColumnsType<Ticket> = [
 ];
 
 function TicketListPage() {
-  const tickets = Route.useLoaderData();
+  const initialTickets = Route.useLoaderData();
+  const [tickets, setTickets] = useState<Ticket[]>(initialTickets);
+  const [modalOpen, setModalOpen] = useState(false);
+
+  function handleNewTicket(ticket: Ticket) {
+    // Optimistic insert: prepend to list immediately, no network round-trip needed yet.
+    setTickets((prev) => [ticket, ...prev]);
+    setModalOpen(false);
+  }
 
   return (
-    <Table<Ticket>
-      rowKey="id"
-      columns={COLUMNS}
-      dataSource={tickets}
-      pagination={{ pageSize: 10 }}
-    />
+    <>
+      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 16 }}>
+        <Button type="primary" onClick={() => setModalOpen(true)}>
+          New ticket
+        </Button>
+      </div>
+
+      <Table<Ticket>
+        rowKey="id"
+        columns={COLUMNS}
+        dataSource={tickets}
+        pagination={{ pageSize: 10 }}
+      />
+
+      <NewTicketModal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onSubmit={handleNewTicket}
+      />
+    </>
   );
 }
